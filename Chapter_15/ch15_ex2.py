@@ -101,8 +101,7 @@ class Hand(list):
         return [d for d in self if d.double]
 
     def highest_double(self) -> Optional[Domino_1]:
-        descending = sorted(self.doubles(), key=lambda d: d.v1, reverse=True)
-        if descending:
+        if descending := sorted(self.doubles(), key=lambda d: d.v1, reverse=True):
             return descending[0]
         return None
 

@@ -75,9 +75,12 @@ class Wheel:
 
     @staticmethod
     def redblack(n: int) -> str:
-        return "Red" if n in (
-            1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36
-        ) else "Black"
+        return (
+            "Red"
+            if n
+            in {1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36}
+            else "Black"
+        )
 
     @staticmethod
     def hilo(n: int) -> str:
@@ -178,7 +181,7 @@ def roulette_server(count: int = 1) -> None:
     if count is None:
         httpd.serve_forever()
     else:
-        for c in range(count):
+        for _ in range(count):
             httpd.handle_request()
 
 

@@ -46,7 +46,7 @@ class FaceCard(Card):
 def card(rank: int, suit: Suit) -> Card:
     if rank == 1:
         return AceCard("A", suit)
-    elif rank in (11, 12, 13):
+    elif rank in {11, 12, 13}:
         rank_str = {11: "J", 12: "Q", 13: "K"}[rank]
         return FaceCard(rank_str, suit)
     else:
@@ -89,7 +89,7 @@ def simulation() -> None:
     raw_outcomes: Counter[Tuple[Optional[int], Optional[int]]] = collections.Counter()
     game_payout: Counter[str] = collections.Counter()
 
-    for i in range(20_000):
+    for _ in range(20_000):
         deck = Deck()
         player_hand, player_result = deal_rules(deck)
         dealer_hand, dealer_result = deal_rules(deck)

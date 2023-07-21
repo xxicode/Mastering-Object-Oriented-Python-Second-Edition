@@ -75,7 +75,7 @@ class FixedPoint(numbers.Rational):
         return f"{self.__class__.__name__:s}({self.value:d},scale={self.scale:d})"
 
     def __format__(self, specification: str) -> str:
-        if specification == "":
+        if not specification:
             specification = self.default_format
         return specification.format(self.value / self.scale)  # no rounding
 
@@ -176,13 +176,12 @@ class FixedPoint(numbers.Rational):
     # Note equality among floats isn't a good idea.
     # Also, should FixedPoint(123, 100) equal FixedPoint(1230, 1000)?
     def __eq__(self, other: Any) -> bool:
-        if isinstance(other, FixedPoint):
-            if self.scale == other.scale:
-                return self.value == other.value
-            else:
-                return self.value * other.scale // self.scale == other.value
-        else:
+        if not isinstance(other, FixedPoint):
             return abs(self.value / self.scale - float(other)) < .5 / self.scale
+        if self.scale == other.scale:
+            return self.value == other.value
+        else:
+            return self.value * other.scale // self.scale == other.value
 
     def __ne__(self, other: Any) -> bool:
         return not (self == other)
@@ -206,12 +205,11 @@ class FixedPoint(numbers.Rational):
         while m % P == n % P == 0:
             m, n = m // P, n // P
 
-        if n % P == 0:
-            hash_ = sys.hash_info.inf
-        else:
-            # Fermat's Little Theorem: pow(n, P-1, P) is 1, so
-            # pow(n, P-2, P) gives the inverse of n modulo P.
-            hash_ = (abs(m) % P) * pow(n, P - 2, P) % P
+        hash_ = (
+            sys.hash_info.inf
+            if n % P == 0
+            else (abs(m) % P) * pow(n, P - 2, P) % P
+        )
         if m < 0:
             hash_ = -hash_
         if hash_ == -1:

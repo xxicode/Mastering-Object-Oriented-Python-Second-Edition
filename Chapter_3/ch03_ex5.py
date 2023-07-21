@@ -102,8 +102,7 @@ class AddUnitMeta(type):
         cls: Type, name: str, bases: Tuple[Type, ...], namespace: Dict[str, Any], **kwds
     ) -> "Float_Units2":
         namespace["unit"] = None
-        result = cast("Float_Units2", super().__new__(cls, name, bases, namespace))
-        return result
+        return cast("Float_Units2", super().__new__(cls, name, bases, namespace))
 
 
 class Float_Units2(float, metaclass=AddUnitMeta):

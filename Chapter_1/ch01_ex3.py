@@ -8,10 +8,7 @@ Chapter 1. Example 3.
 """
 
 def F(n: int) -> int:
-    if n in (0, 1):
-        return 1
-    else:
-        return F(n-1) + F(n-2)
+    return 1 if n in {0, 1} else F(n-1) + F(n-2)
 
 test_F_8 = """
     >>> F(8)

@@ -19,7 +19,7 @@ class Power1:
 
     def __call__(self, x: int, n: int) -> int:
         p = 1
-        for i in range(n):
+        for _ in range(n):
             p *= x
         return p
 
@@ -38,7 +38,7 @@ class Power2(CallableClass):  # type: ignore
 
     def __call_(self, x: int, n: int) -> int:
         p = 1
-        for i in range(n):
+        for _ in range(n):
             p *= x
         return p
 
@@ -59,7 +59,7 @@ class Power3:
 
     def __call_(self, x: int, n: int) -> int:
         p = 1
-        for i in range(n):
+        for _ in range(n):
             p *= x
         return p
 

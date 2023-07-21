@@ -161,7 +161,7 @@ def card_from_bytes(buffer: bytes) -> Card2:
     """Parses bytes to rebuild the original Card2 instance."""
     string = buffer.decode("utf8")
     try:
-        if not (string[0] == "(" and string[-1] == ")"):
+        if string[0] != "(" or string[-1] != ")":
             raise ValueError
         code, rank_number, suit_value = string[1:-1].split()
         if int(rank_number) not in range(1, 14):

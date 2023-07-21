@@ -26,9 +26,7 @@ from Chapter_18.ch18_ex1 import get_options_1
 
 
 def nint(x: Optional[str]) -> Optional[int]:
-    if x is None:
-        return x
-    return int(x)
+    return x if x is None else int(x)
 
 
 def get_options_2(argv: List[str] = sys.argv[1:]) -> argparse.Namespace:

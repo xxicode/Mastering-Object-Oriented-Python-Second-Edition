@@ -149,7 +149,7 @@ test_dc_ordering = """
 class Deck(list):
 
     def __init__(self, size: int = 1) -> None:
-        for d in range(size):
+        for _ in range(size):
             cards = [CardDC(r, s) for r in range(1, 14) for s in Suit]
             super().extend(cards)
         random.shuffle(self)
@@ -361,16 +361,12 @@ class Unit:
     factor = 1.0
 
     @classmethod
-    def value(class_, value: float) -> float:
-        if value is None:
-            return None
-        return value / class_.factor
+    def value(cls, value: float) -> float:
+        return None if value is None else value / cls.factor
 
     @classmethod
-    def convert(class_, value: float) -> float:
-        if value is None:
-            return None
-        return value * class_.factor
+    def convert(cls, value: float) -> float:
+        return None if value is None else value * cls.factor
 
 
 @standard

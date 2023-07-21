@@ -57,8 +57,7 @@ def location_list(config_name: str = "someapp.config") -> List[Path]:
         Path.cwd(),
     )
     candidates = (dir / config_name for dir in config_locations)
-    config_paths = [path for path in candidates if path.exists()]
-    return config_paths
+    return [path for path in candidates if path.exists()]
 
 test_location_list = """
 >>> import os

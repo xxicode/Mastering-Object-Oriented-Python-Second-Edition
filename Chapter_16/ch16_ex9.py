@@ -61,7 +61,7 @@ class Log_Consumer_1(multiprocessing.Process):
         self.log.info("Consumer Started")
         while True:
             log_record = self.source.get()
-            if log_record == None: break
+            if log_record is None: break
             self.combined.handle(log_record)
             self.counts[log_record.getMessage()] += 1
         self.log.info("Consumer Finished")
@@ -83,11 +83,11 @@ class Log_Producer(multiprocessing.Process):
         self.log.setLevel(logging.INFO)
 
     def run(self):
-        self.log.info(f"Started")
+        self.log.info("Started")
         for i in range(100):
             self.log.info(f"Message {i:d}")
             time.sleep(0.001)
-        self.log.info(f"Finished")
+        self.log.info("Finished")
 
 def demo():
 

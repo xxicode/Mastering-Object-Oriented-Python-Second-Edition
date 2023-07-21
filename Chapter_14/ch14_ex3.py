@@ -54,7 +54,7 @@ samples = 100
 
 if __name__ == "__main__":
     code = compile(py_file.read(), "stringio", "exec")
-    assignments: Dict[str, Any] = dict()
+    assignments: Dict[str, Any] = {}
     exec(code, globals(), assignments)
     config = SimpleNamespace(**assignments)
 
@@ -172,9 +172,7 @@ if __name__ == "__main__":
 class AttrChainMap(ChainMap):
 
     def __getattr__(self, name: str) -> Any:
-        if name == "maps":
-            return self.__dict__["maps"]
-        return super().get(name, None)
+        return self.__dict__["maps"] if name == "maps" else super().get(name, None)
 
     def __setattr__(self, name: str, value: Any) -> None:
         if name == "maps":

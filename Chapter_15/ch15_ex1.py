@@ -59,10 +59,7 @@ class DominoBoneYard:
             yield self._dominoes[p * 7:p * 7 + 7]
 
     def can_play_first(self, hand: List[Tuple[int, int]]) -> bool:
-        for d in hand:
-            if self.double(d) and d[0] == 6:
-                return True
-        return False
+        return any(self.double(d) and d[0] == 6 for d in hand)
 
     def score_hand(self, hand: List[Tuple[int, int]]) -> int:
         return sum(d[0] + d[1] for d in hand)
@@ -108,7 +105,7 @@ class DominoBoneYard2:
         random.shuffle(self._dominoes)
 
     def hand_iter(self, players: int = 4) -> Iterator[Hand]:
-        for p in range(players):
+        for _ in range(players):
             hand, self._dominoes = Hand(self._dominoes[:7]), self._dominoes[7:]
             yield hand
 
@@ -152,12 +149,11 @@ test_dby2 = """
 class Hand3(Hand):
 
     def highest_double_index(self) -> Optional[int]:
-        descending = sorted(
+        if descending := sorted(
             self.doubles_indices(),
             key=lambda double_index: self[double_index].v1,
             reverse=True,
-        )
-        if descending:
+        ):
             return descending[0]
         return None
 
@@ -165,7 +161,7 @@ class Hand3(Hand):
 class DominoBoneYard3(DominoBoneYard2):
 
     def hand_iter(self, players: int = 4) -> Iterator[Hand3]:
-        for p in range(players):
+        for _ in range(players):
             hand, self._dominoes = Hand3(self._dominoes[:7]), self._dominoes[7:]
             yield hand
 
@@ -200,7 +196,7 @@ class FancyDealer4:
     ) -> Iterator[Hand3]:
         if players * tiles > len(self.boneyard._dominoes):
             raise ValueError(f"Can't deal players={players} tiles={tiles}")
-        for p in range(players):
+        for _ in range(players):
             hand = Hand3(self.boneyard._dominoes[:tiles])
             self.boneyard._dominoes = self.boneyard._dominoes[tiles:]
             yield hand
@@ -230,7 +226,7 @@ class DominoBoneYard3b:
         random.shuffle(self._dominoes)
 
     def hand_iter(self, players: int = 4) -> Iterator[Hand3]:
-        for p in range(players):
+        for _ in range(players):
             hand = Hand3(self._dominoes[:self.hand_size])
             self._dominoes = self._dominoes[self.hand_size:]
             yield hand
@@ -271,7 +267,7 @@ class DominoBoneYard3c:
         random.shuffle(self._dominoes)
 
     def hand_iter(self, players: int = 4) -> Iterator[Hand]:
-        for p in range(players):
+        for _ in range(players):
             hand = self.hand_class(self._dominoes[:self.hand_size])
             self._dominoes = self._dominoes[self.hand_size:]
             yield hand

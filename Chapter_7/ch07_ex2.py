@@ -128,12 +128,12 @@ class StatsList2(list):
     def _new(self, value: float) -> None:
         self.sum0 += 1
         self.sum1 += value
-        self.sum2 += value * value
+        self.sum2 += value**2
 
     def _rmv(self, value: float) -> None:
         self.sum0 -= 1
         self.sum1 -= value
-        self.sum2 -= value * value
+        self.sum2 -= value**2
 
     def insert(self, index: int, value: float) -> None:
         super().insert(index, value)
@@ -164,8 +164,7 @@ class StatsList2(list):
 
     def __add__(self, sequence: Iterable[float]) -> "StatsList2":
         generic = super().__add__(cast(StatsList2, sequence))
-        result = StatsList2(generic)
-        return result
+        return StatsList2(generic)
 
     # reveal_type(list.__iadd__)
     # reveal_type(list.__add__)
@@ -295,7 +294,7 @@ test_eager_stats_list = """
 class StatsList3:
 
     def __init__(self) -> None:
-        self._list: List[float] = list()
+        self._list: List[float] = []
         self.sum0 = 0  # len(self), sometimes called "N"
         self.sum1 = 0.  # sum(self)
         self.sum2 = 0.  # sum(x**2 for x in self)
@@ -304,7 +303,7 @@ class StatsList3:
         self._list.append(value)
         self.sum0 += 1
         self.sum1 += value
-        self.sum2 += value * value
+        self.sum2 += value**2
 
     # etc.
 

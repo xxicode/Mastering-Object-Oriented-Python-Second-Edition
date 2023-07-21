@@ -157,10 +157,8 @@ class MultiDeck(list):
 
     def __init__(self, size: int = 5) -> None:
         super().__init__()
-        for d in range(size):
-            deck = list(
-                card(r, s) for r in range(1, 14) for s in cast(Iterable[Suit], Suit)
-            )
+        for _ in range(size):
+            deck = [card(r, s) for r in range(1, 14) for s in cast(Iterable[Suit], Suit)]
             random.shuffle(deck)
             while deck:
                 super().append(deck.pop())
@@ -208,9 +206,7 @@ def get_options(argv: List[str] = sys.argv[1:]) -> ChainMap:
     with default_path.open() as default_file:
         defaults = json.load(default_file)
 
-    combined = ChainMap(
-        vars(cmdline), config_file, os.environ, defaults)
-    return combined
+    return ChainMap(vars(cmdline), config_file, os.environ, defaults)
 
 
 test_options = """
@@ -360,7 +356,7 @@ import random
 
 def value_iterator(count=100, seed=4000) -> Iterable[str]:
     random.seed(seed, version=1)
-    for i in range(count):
+    for _ in range(count):
         yield str(random.randint(1, 6) + random.randint(1, 6))
 
 

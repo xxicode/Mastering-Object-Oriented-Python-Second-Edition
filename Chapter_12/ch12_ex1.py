@@ -7,6 +7,7 @@ Code Examples for Mastering Object-Oriented Python 2nd Edition
 Chapter 12. Example 1.
 """
 
+
 from typing import Dict, List, Tuple
 
 # One issue here is that the microblog has no processing.
@@ -138,12 +139,10 @@ with closing(database.cursor()) as cursor:
     """
     for tag in ("#RedRanger", "#Whitby42", "#ICW"):
         row = cursor.execute(retrieve_tag, (tag,)).fetchone()
-        if row:
-            tag_id = row[0]
-        else:
+        if not row:
             cursor.execute(create_tag, (tag,))
             row = cursor.execute(get_last_id).fetchone()
-            tag_id = row[0]
+        tag_id = row[0]
         cursor.execute(create_tag_post_association, (post_id, tag_id))
 
 database.commit()

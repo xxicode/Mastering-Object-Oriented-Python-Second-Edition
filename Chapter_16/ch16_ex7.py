@@ -23,7 +23,6 @@ class Player:
         warnings.warn(
             "bet is deprecated, use place_bet",
             DeprecationWarning, stacklevel=2)
-        pass
 
 
 warnings.simplefilter("always", category=DeprecationWarning)

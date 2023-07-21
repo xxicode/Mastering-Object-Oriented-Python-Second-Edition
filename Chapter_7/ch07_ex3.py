@@ -104,11 +104,10 @@ class TreeNode:
                 self.less.add(item)
             else:
                 self.less = TreeNode(item, parent=self)
-        elif self.item < item:
-            if self.more:
-                self.more.add(item)
-            else:
-                self.more = TreeNode(item, parent=self)
+        elif self.more:
+            self.more.add(item)
+        else:
+            self.more = TreeNode(item, parent=self)
 
     def remove(self, item: Comparable) -> None:
         # Recursive search for node
@@ -122,23 +121,20 @@ class TreeNode:
                 self.less.remove(item)
             else:
                 raise KeyError
-        else:  # self.item == item
-            if self.less and self.more:  # Two children are present
-                successor = self.more._least()
-                self.item = successor.item
-                if successor.item:
-                    successor.remove(successor.item)
-            elif self.less:  # One child on less
-                self._replace(self.less)
-            elif self.more:  # One child on more
-                self._replace(self.more)
-            else:  # Zero children
-                self._replace(None)
+        elif self.less and self.more:  # Two children are present
+            successor = self.more._least()
+            self.item = successor.item
+            if successor.item:
+                successor.remove(successor.item)
+        elif self.less:  # One child on less
+            self._replace(self.less)
+        elif self.more:  # One child on more
+            self._replace(self.more)
+        else:  # Zero children
+            self._replace(None)
 
     def _least(self) -> "TreeNode":
-        if self.less is None:
-            return self
-        return self.less._least()
+        return self if self.less is None else self.less._least()
 
     def _replace(self, new: Optional["TreeNode"] = None) -> None:
         if self.parent:
@@ -171,8 +167,6 @@ class Tree(collections.abc.MutableSet):
                 self.size -= 1
             except KeyError:
                 pass
-        else:
-            pass
 
     def __contains__(self, item: Any) -> bool:
         if self.root.more:
@@ -183,8 +177,7 @@ class Tree(collections.abc.MutableSet):
 
     def __iter__(self) -> Iterator[Comparable]:
         if self.root.more:
-            for item in iter(self.root.more):
-                yield item
+            yield from iter(self.root.more)
         # Otherwise, the tree is empty.
 
     def __len__(self) -> int:

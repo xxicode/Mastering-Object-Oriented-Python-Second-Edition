@@ -19,7 +19,7 @@ import sys
 # This is confusing to mypy because it's not clear the decorator adds attributes.
 
 def log_to(*names: str):
-    if len(names) == 0:
+    if not names:
         names = ('logger',)
 
     def concrete_log_to(cls: Type) -> Type:

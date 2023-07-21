@@ -74,11 +74,11 @@ class Wheel3:
     ) -> Iterable[bytes]:
         request = wsgiref.util.shift_path_info(environ)  # 1. Parse.
         print("Wheel3", request, file=sys.stderr)  # 2. Logging.
-        if request and request.lower().startswith("eu"):  # 3. Evaluate.
-            response = self.eu(environ, start_response)
-        else:
-            response = self.am(environ, start_response)
-        return response  # 4. Respond.
+        return (
+            self.eu(environ, start_response)
+            if request and request.lower().startswith("eu")
+            else self.am(environ, start_response)
+        )
 
 
 # REST with sessions and state
@@ -172,17 +172,16 @@ class Roulette(WSGI):
     def player_app(
         self, environ: "WSGIEnvironment", start_response: "StartResponse"
     ) -> Iterable[bytes]:
-        if environ["REQUEST_METHOD"] == "GET":
-            details = dict(stake=self.table.stake, rounds=self.rounds)
-            status = "200 OK"
-            headers = [("Content-type", "application/json; charset=utf-8")]
-            start_response(status, headers)
-            return [json.dumps(details).encode("UTF-8")]
-        else:
+        if environ["REQUEST_METHOD"] != "GET":
             raise RESTException(
                 "405 METHOD_NOT_ALLOWED",
                 "Method '{REQUEST_METHOD}' not allowed".format_map(environ),
             )
+        details = dict(stake=self.table.stake, rounds=self.rounds)
+        status = "200 OK"
+        headers = [("Content-type", "application/json; charset=utf-8")]
+        start_response(status, headers)
+        return [json.dumps(details).encode("UTF-8")]
 
     def bet_app(
         self, environ: "WSGIEnvironment", start_response: "StartResponse"
@@ -200,7 +199,7 @@ class Roulette(WSGI):
                     self.table.place_bet(detail["bet"], int(detail["amount"]))
             except Exception as e:
                 # TODO: Must undo all bets.
-                raise RESTException(f"403 FORBIDDEN", "Bet {raw!r}")
+                raise RESTException("403 FORBIDDEN", "Bet {raw!r}")
             details = dict(self.table.bets)
         else:
             raise RESTException(
@@ -215,28 +214,27 @@ class Roulette(WSGI):
     def wheel_app(
         self, environ: "WSGIEnvironment", start_response: "StartResponse"
     ) -> Iterable[bytes]:
-        if environ["REQUEST_METHOD"] == "POST":
-            size = environ["CONTENT_LENGTH"]
-            if size != "":
-                raw = environ["wsgi.input"].read(int(size))
-                raise RESTException(
-                    "403 FORBIDDEN", f"Data '{raw!r}' not allowed"
-                )
-            spin = self.wheel.spin()
-            payout = self.table.resolve(spin)
-            self.rounds += 1
-            details = dict(
-                spin=spin, payout=payout, stake=self.table.stake, rounds=self.rounds
-            )
-            status = "200 OK"
-            headers = [("Content-type", "application/json; charset=utf-8")]
-            start_response(status, headers)
-            return [json.dumps(details).encode("UTF-8")]
-        else:
+        if environ["REQUEST_METHOD"] != "POST":
             raise RESTException(
                 "405 METHOD_NOT_ALLOWED",
                 "Method '{REQUEST_METHOD}' not allowed".format_map(environ),
             )
+        size = environ["CONTENT_LENGTH"]
+        if size != "":
+            raw = environ["wsgi.input"].read(int(size))
+            raise RESTException(
+                "403 FORBIDDEN", f"Data '{raw!r}' not allowed"
+            )
+        spin = self.wheel.spin()
+        payout = self.table.resolve(spin)
+        self.rounds += 1
+        details = dict(
+            spin=spin, payout=payout, stake=self.table.stake, rounds=self.rounds
+        )
+        status = "200 OK"
+        headers = [("Content-type", "application/json; charset=utf-8")]
+        start_response(status, headers)
+        return [json.dumps(details).encode("UTF-8")]
 
 
 test_table = """
@@ -266,7 +264,7 @@ def roulette_server_4(count: int = 1):
     if count is None:
         httpd.serve_forever()
     else:
-        for c in range(count):
+        for _ in range(count):
             httpd.handle_request()
 
 
@@ -286,12 +284,10 @@ def roulette_client(method="GET", path="/", data=None):
     response = rest.getresponse()
     raw = response.read().decode("utf-8")
     if 200 <= response.status < 300:
-        document = json.loads(raw)
-        return document
-    else:
-        print(response.status, response.reason)
-        print(response.getheaders())
-        print(raw)
+        return json.loads(raw)
+    print(response.status, response.reason)
+    print(response.getheaders())
+    print(raw)
 
 
 # REST with authentication
@@ -314,7 +310,7 @@ class Authentication:
     @staticmethod
     def _iter_hash(iterations: int, salt: bytes, username: bytes, password: bytes):
         seed = salt + b":" + username + b":" + password
-        for i in range(iterations):
+        for _ in range(iterations):
             seed = sha256(seed).digest()
         return seed
 
@@ -462,7 +458,7 @@ def auth_server(count: int = 1) -> None:
     if count is None:
         httpd.serve_forever()
     else:
-        for c in range(count):
+        for _ in range(count):
             httpd.handle_request()
 
 

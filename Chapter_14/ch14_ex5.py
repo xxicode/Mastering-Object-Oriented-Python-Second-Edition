@@ -97,8 +97,7 @@ class PropertyParser:
             if not (line.startswith("#") or line.startswith("!"))
         )
         for line in non_comment:
-            ke_match = self.key_element_pat.match(line)
-            if ke_match:
+            if ke_match := self.key_element_pat.match(line):
                 key, element = ke_match.group(1), ke_match.group(2)
             else:
                 key, element = line, ""
@@ -111,26 +110,23 @@ class PropertyParser:
     ) -> Iterator[Tuple[str, str]]:
         if isinstance(file_name_or_path, io.TextIOBase):
             return self.loads(file_name_or_path.read())
-        else:
-            name_or_path = cast(Union[str, Path], file_name_or_path)
-            with Path(name_or_path).open("r") as file:
-                return self.loads(file.read())
+        name_or_path = cast(Union[str, Path], file_name_or_path)
+        with Path(name_or_path).open("r") as file:
+            return self.loads(file.read())
 
     def loads(self, data: str) -> Iterator[Tuple[str, str]]:
         return self._parse(data)
 
     def _escape(self, data: str) -> str:
         d1 = re.sub(r"\\([:#!=\s])", lambda x: x.group(1), data)
-        d2 = re.sub(r"\\u([0-9A-Fa-f]+)", lambda x: chr(int(x.group(1), 16)), d1)
-        return d2
+        return re.sub(r"\\u([0-9A-Fa-f]+)", lambda x: chr(int(x.group(1), 16)), d1)
 
     def _escape2(self, data: str) -> str:
-        d2 = re.sub(
+        return re.sub(
             r"\\([:#!=\s])|\\u([0-9A-Fa-f]+)",
             lambda x: x.group(1) if x.group(1) else chr(int(x.group(2), 16)),
             data,
         )
-        return d2
 
 
 test_should_parse_prop1 = """

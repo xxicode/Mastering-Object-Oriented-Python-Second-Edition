@@ -33,9 +33,7 @@ class Hand:
         return f"{self.__class__.__name__}({self.dealer_card!r}, {cards_text})"
 
     def __format__(self, spec: str) -> str:
-        if spec == "":
-            return str(self)
-        return ", ".join(f"{c:{spec}}" for c in self.cards)
+        return str(self) if not spec else ", ".join(f"{c:{spec}}" for c in self.cards)
 
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, int):
@@ -69,9 +67,7 @@ class Hand:
     def total(self) -> int:
         delta_soft = max(c.soft - c.hard for c in self.cards)
         hard = sum(c.hard for c in self.cards)
-        if hard + delta_soft <= 21:
-            return hard + delta_soft
-        return hard
+        return hard + delta_soft if hard + delta_soft <= 21 else hard
 
 
 class FrozenHand(Hand):

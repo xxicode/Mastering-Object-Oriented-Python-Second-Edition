@@ -356,7 +356,7 @@ class Access3(Access2):
 
     def new(self, path: Path) -> None:
         super().new(path)
-        self.database["_Index:Blog"] = list()
+        self.database["_Index:Blog"] = []
 
     def create_blog(self, blog: Blog) -> Blog:
         super().create_blog(blog)
@@ -399,7 +399,7 @@ class Access4(Access3):
 
     def new(self, path: Path) -> None:
         super().new(path)
-        self.database["_Index:Blog_Title"] = dict()
+        self.database["_Index:Blog_Title"] = {}
 
     def create_blog(self, blog):
         super().create_blog(blog)
@@ -476,7 +476,7 @@ def create(access, blogs=100, posts_per_blog=100) -> None:
                 date=datetime.datetime.now(),
                 title="Blog {0}; Post {1}".format(b_n, p_n),
                 rst_text="Blog {0}; Post {1}\nText\n".format(b_n, p_n),
-                tags=list("#tag{0}".format(p_n + i) for i in range(3)),
+                tags=["#tag{0}".format(p_n + i) for i in range(3)],
             )
             access.create_post(b, p)
 
@@ -508,7 +508,7 @@ def performance(cycles=3):
                 access.open(filename)
                 renderer = Render(access)
                 titles = []
-                for i in range(10):
+                for _ in range(10):
                     choice = random.randint(1, 100)
                     blog_by_id = access.retrieve_blog(f"Blog:{choice}")
                     renderer.emit_blog(blog_by_id, buffer)

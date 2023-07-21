@@ -28,8 +28,8 @@ class Card:
     ) -> None:
         self.rank = rank
         self.suit = suit
-        self.hard = hard or int(rank)
-        self.soft = soft or int(rank)
+        self.hard = hard or rank
+        self.soft = soft or rank
 
     def __str__(self) -> str:
         return f"{self.rank!s}{self.suit.value!s}"
@@ -70,7 +70,7 @@ class Deck1(list):
     def __init__(self, size: int = 1) -> None:
         super().__init__()
         self.rng = random.Random()
-        for d in range(size):
+        for _ in range(size):
             for s in iter(Suit):
                 cards: List[Card] = (
                     [cast(Card, AceCard(1, s))]
@@ -93,7 +93,7 @@ class Deck2(list):
     ) -> None:
         super().__init__()
         self.rng = random
-        for d in range(size):
+        for _ in range(size):
             for s in iter(Suit):
                 cards = (
                     [ace_class(1, s)]
@@ -244,7 +244,7 @@ class Deck3(list):
     ) -> None:
         super().__init__()
         self.rng = random
-        for d in range(size):
+        for _ in range(size):
             super().extend(
                 [card_factory(r, s) for r in range(1, 14) for s in iter(Suit)]
             )
@@ -294,14 +294,14 @@ class TestDeckDeal(unittest.TestCase):
     def test_Deck3_should_deal(self) -> None:
         d = Deck3(size=1, random=self.mock_rng, card_factory=self.mock_card)
         dealt = []
-        for i in range(52):
+        for _ in range(52):
             card = d.deal()
             dealt.append(card)
         self.assertEqual(dealt, self.mock_deck)
 
     def test_empty_deck_should_exception(self) -> None:
         d = Deck3(size=1, random=self.mock_rng, card_factory=self.mock_card)
-        for i in range(52):
+        for _ in range(52):
             card = d.deal()
         self.assertRaises(DeckEmpty, d.deal)
 
@@ -489,9 +489,7 @@ import csv
 
 
 def float_or_none(text: str) -> Optional[float]:
-    if len(text) == 0:
-        return None
-    return float(text)
+    return None if not text else float(text)
 
 
 # TestCase with only one test method

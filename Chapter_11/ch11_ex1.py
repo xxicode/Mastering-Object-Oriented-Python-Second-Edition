@@ -102,10 +102,7 @@ if __name__ == "__main__":
     import shelve
 
     shelf = shelve.open(str(Path.cwd() / "data" / "ch11_blog"))
-    db_id = 0
-
-    # Typical seqence for saving...
-    db_id += 1
+    db_id = 0 + 1
     b1._id = f"Blog:{db_id}"
     shelf[b1._id] = b1
     print(f"Create {shelf[b1._id]._id} {shelf[b1._id].title}")

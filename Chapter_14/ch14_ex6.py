@@ -134,14 +134,12 @@ class Configuration:
         section, _, item = qual_name.partition(".")
         query = "./{0}/{1}".format(section, item)
         node = self.config.find(query)
-        if node is None:
-            return default
-        return node.text
+        return default if node is None else node.text
 
     def __getitem__(self, section):
         query = "./{0}".format(section)
         parent = self.config.find(query)
-        return dict((item.tag, item.text) for item in parent)
+        return {item.tag: item.text for item in parent}
 
 def main_cm_prop(config):
     dealer_nm = config.get("table.dealer", "Hit17")

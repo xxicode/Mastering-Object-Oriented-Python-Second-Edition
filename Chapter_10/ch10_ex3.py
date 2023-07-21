@@ -136,14 +136,15 @@ import builtins
 class RestrictedUnpickler(pickle.Unpickler):
 
     def find_class(self, module: str, name: str) -> Any:
-        if module == "builtins":
-            if name not in ("exec", "eval"):
-                return getattr(builtins, name)
-        elif module in ("__main__", "Chapter_10.ch10_ex3", "ch10_ex3"):
+        if module == "builtins" and name not in ("exec", "eval"):
+            return getattr(builtins, name)
+        elif module != "builtins" and module in {
+            "__main__",
+            "Chapter_10.ch10_ex3",
+            "ch10_ex3",
+            "Chapter_10.ch10_ex2",
+        }:
             # Valid module names depends on execution context.
-            return globals()[name]
-        # elif module in any of our application modules...
-        elif module in ("Chapter_10.ch10_ex2",):
             return globals()[name]
         raise pickle.UnpicklingError(
             f"global '{module}.{name}' is forbidden"

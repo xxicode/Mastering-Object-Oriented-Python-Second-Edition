@@ -33,8 +33,8 @@ class Card:
     ) -> None:
         self.rank = rank
         self.suit = suit
-        self.hard = hard or int(rank)
-        self.soft = soft or int(rank)
+        self.hard = hard or rank
+        self.soft = soft or rank
 
     def __str__(self) -> str:
         return f"{self.rank!s}{self.suit.value!s}"
@@ -72,7 +72,7 @@ class Deck1(list):
     def __init__(self, size: int = 1) -> None:
         super().__init__()
         self.rng = random.Random()
-        for d in range(size):
+        for _ in range(size):
             for s in iter(Suit):
                 cards: List[Card] = (
                     [cast(Card, AceCard(1, s))]
@@ -95,7 +95,7 @@ class Deck2(list):
     ) -> None:
         super().__init__()
         self.rng = random
-        for d in range(size):
+        for _ in range(size):
             for s in iter(Suit):
                 cards = (
                     [ace_class(1, s)]
@@ -189,7 +189,7 @@ class Deck3(list):
     def __init__(self, size=1, random=random.Random(), card_factory=card):
         super().__init__()
         self.rng = random
-        for d in range(size):
+        for _ in range(size):
             super().extend([card_factory(r, s) for r in range(1, 14) for s in iter(Suit)])
         self.rng.shuffle(self)
 
@@ -450,7 +450,9 @@ def test_database(db_session_maker):
     assert 1 == len(results)
     assert "Hard Aground" == results[0].title
     assert "Travel 2013" == results[0].blog.title
-    assert set(["#RedRanger", "#Whitby42", "#ICW"]) == set(t.phrase for t in results[0].tags)
+    assert {"#RedRanger", "#Whitby42", "#ICW"} == {
+        t.phrase for t in results[0].tags
+    }
 
 # External CSV Examples
 # ======================
@@ -463,9 +465,7 @@ from pytest import approx
 # Parsing the sample data
 
 def float_or_none(text):
-    if len(text) == 0:
-        return None
-    return float(text)
+    return None if len(text) == 0 else float(text)
 
 # Build Suite from user-supplied sample data
 

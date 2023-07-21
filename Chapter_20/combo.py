@@ -58,8 +58,7 @@ def combinations(n: int, k: int) -> int:
 # ::
 
     def fact(a: int) -> int:
-        if a == 0: return 1
-        return a*fact(a-1)
+        return 1 if a == 0 else a*fact(a-1)
 
 # Here's the final calculation. Note that we're using integer division.
 # Otherwise, we'd get an unexpected conversion to float.

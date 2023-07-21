@@ -77,20 +77,17 @@ with (Path.cwd()/"data"/"ch10_blackjack.file").open("w", encoding="cp037", newli
 
 # Loading data from the simulator. Part 1 -- Physical decomposition into rows.
 def line_iter(aFile: TextIO, metadata: Union[Metadata, 'XMetadata']) -> Iterator[str]:
-    recBytes = aFile.read(metadata.reclen)
-    while recBytes:
+    while recBytes := aFile.read(metadata.reclen):
         yield recBytes
-        recBytes = aFile.read(metadata.reclen)
 
 
 # Part 2 -- decomposition into named fields.
 def record_iter(aFile: TextIO, metadata: Metadata) -> Iterator[Dict[str, str]]:
     for line in line_iter(aFile, metadata):
-        record = {
-            name: line[start:start + size].strip()
+        yield {
+            name: line[start : start + size].strip()
             for name, start, size, format_spec in metadata.fields
         }
-        yield record
 
 
 # Part 3 -- using the field to dictionary parser.
@@ -151,9 +148,7 @@ import codecs
 
 
 def ebcdic_lookup(name, fallback=codecs.lookup):  # real signature unknown
-    if name == "ebcdic":
-        return codecs.lookup("cp037")
-    return fallback(name)
+    return codecs.lookup("cp037") if name == "ebcdic" else fallback(name)
 
 
 codecs.register(ebcdic_lookup)
@@ -228,8 +223,7 @@ def comp3_decode(data: bytes, metadata: 'XMetadata', field_metadata: 'XField') -
     digits = []
     for b in data[:-1]:
         hi, lo = divmod(b, 16)
-        digits.append(str(hi))
-        digits.append(str(lo))
+        digits.extend((str(hi), str(lo)))
     digit, sign_byte = divmod(data[-1], 16)
     digits.append(str(digit))
     text = "".join(digits)
@@ -316,11 +310,10 @@ def comp3_encode(data: Decimal, metadata: 'XMetadata', field_metadata: 'XField')
     value = abs(int(data * Decimal(10) ** precision))
     digits = [0x0d if data < 0 else 0x00]  # Trailing sign.
     nDigits = field_metadata.length * 2 - 1
-    for i in range(nDigits):
+    for _ in range(nDigits):
         digits = [value % 10] + digits
         value //= 10
-    b = bytes((hi * 16 + lo for hi, lo in list(zip(digits[::2], digits[1::2]))))
-    return b
+    return bytes((hi * 16 + lo for hi, lo in list(zip(digits[::2], digits[1::2]))))
 
 
 # Our expanded metadata to include more refined field-level definitions.
@@ -398,11 +391,10 @@ def record2_iter(aFile: TextIO, metadata: XMetadata) -> Iterator[Dict[str, XFiel
             (field, line[field.offset:field.offset + field.length])
             for field in metadata.fields
         )
-        record = dict(
-            (field.name, field.usage[1](data, metadata, field))
+        yield {
+            field.name: field.usage[1](data, metadata, field)
             for field, data in field_data
-        )
-        yield record
+        }
 
 test_reader_2 = """
     >>> with (Path.cwd()/"data"/"ch10_blackjack_comp3.file").open("rb") as source:

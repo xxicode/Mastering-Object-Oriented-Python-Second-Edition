@@ -116,8 +116,8 @@ class Test_Blog_Queries(unittest.TestCase):
         self.assertEqual("Hard Aground", results[0].title)
         self.assertEqual("Travel 2013", results[0].blog.title)
         self.assertEqual(
-            set(["#RedRanger", "#Whitby42", "#ICW"]),
-            set(t.phrase for t in results[0].tags),
+            {"#RedRanger", "#Whitby42", "#ICW"},
+            {t.phrase for t in results[0].tags},
         )
 
 

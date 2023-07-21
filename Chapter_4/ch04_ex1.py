@@ -175,11 +175,11 @@ class Deck(list):
         self, decks: int = 6, factory: Callable[[int, Suit], BlackJackCard] = card21
     ) -> None:
         super().__init__()
-        for i in range(decks):
+        for _ in range(decks):
             self.extend(factory(r + 1, s) for r in range(13) for s in cast(Iterable[Suit], Suit))
         random.shuffle(self)
         burn = random.randint(1, 52)
-        for i in range(burn):
+        for _ in range(burn):
             self.pop()
 
 

@@ -134,7 +134,7 @@ class StateManager:
         if not hasattr(instance, "_saved"):
             class_path = self.base / owner.__name__
             class_path.mkdir(exist_ok=True, parents=True)
-            instance._saved = class_path / str(id(instance))
+            instance._saved = class_path / id(instance)
         return instance._saved
 
 

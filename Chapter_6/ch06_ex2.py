@@ -183,7 +183,7 @@ class Deck(list):
 
     def __init__(self, size: int = 1) -> None:
         super().__init__()
-        for d in range(size):
+        for _ in range(size):
             cards = [Card(r, s) for r in range(13) for s in cast(Iterable[Suit], Suit)]
             super().extend(cards)
         random.shuffle(self)
@@ -237,7 +237,7 @@ class Deck2(list, KnownSequence):
 
     def __init__(self, size: int = 1) -> None:
         super().__init__()
-        for d in range(size):
+        for _ in range(size):
             cards = [Card(r, s) for r in range(13) for s in cast(Iterable[Suit], Suit)]
             super().extend(cards)
         self.raw = True
@@ -281,9 +281,8 @@ class Updating:
     def __enter__(self) -> None:
         try:
             self.previous = (
-                self.target.parent
-                    / (self.target.stem + " backup")
-                ).with_suffix(self.target.suffix)
+                (self.target.parent / f"{self.target.stem} backup")
+            ).with_suffix(self.target.suffix)
             self.target.rename(self.previous)
         except FileNotFoundError:
             # Target doesn't exist. That's okay.
@@ -299,8 +298,8 @@ class Updating:
             # An Exception Occurred: Preserve the erroneous file, if possible.
             try:
                 self.failure = (
-                    self.target.parent / (self.target.stem + " error")
-                    ).with_suffix(self.target.suffix)
+                    self.target.parent / f"{self.target.stem} error"
+                ).with_suffix(self.target.suffix)
                 self.target.rename(self.failure)
             except FileNotFoundError:
                 pass  # Never even got created.

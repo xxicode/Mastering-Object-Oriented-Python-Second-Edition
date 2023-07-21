@@ -139,7 +139,7 @@ class Simulate:
         """Yield statistical samples."""
         x, y = self.table.payout
         blackjack_payout = x / y
-        for count in range(self.samples):
+        for _ in range(self.samples):
             self.player.reset()
             while self.player.stake > 0 and self.player.rounds > 0:
                 self.player.rounds -= 1
@@ -149,10 +149,7 @@ class Simulate:
                     self.player.stake -= 1
                 elif 0.579 <= outcome < 0.883:
                     self.player.stake += 1
-                elif 0.883 <= outcome < 0.943:
-                    # a "push"
-                    pass
-                else:
+                elif not 0.883 <= outcome < 0.943:
                     # 0.943 <= outcome
                     self.player.stake += blackjack_payout
 

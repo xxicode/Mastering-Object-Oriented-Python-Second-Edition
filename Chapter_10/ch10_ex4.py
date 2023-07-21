@@ -106,7 +106,7 @@ class Blackjack(Table):
     def __init__(self, play: Player_Strategy, betting: Betting) -> None:
         self.player = play
         self.betting = betting
-        self.bets: Dict[str, float] = dict()
+        self.bets: Dict[str, float] = {}
         self.rounds = 0
 
     @property
@@ -190,7 +190,7 @@ with (Path.cwd() / "data" / "ch10_blackjack_2.csv").open("w", newline="") as tar
 with (Path.cwd() / "data" / "ch10_blackjack_1.csv").open() as source:
     reader = csv.DictReader(source)
     assert set(reader.fieldnames) == set(GameStat._fields)
-    for gs in (GameStat(**r) for r in reader):
+    for _ in (GameStat(**r) for r in reader):
         pass  # print( gs )
 
 

@@ -121,14 +121,13 @@ class Card2:
         return (hash(self.suit) + 4*hash(self.rank)) % sys.hash_info.modulus
 
     def __format__(self, format_spec: str) -> str:
-        if format_spec == "":
+        if not format_spec:
             return str(self)
-        rs = (
+        return (
             format_spec.replace("%r", self.rank)
-                       .replace("%s", self.suit)
-                       .replace("%%", "%")
+            .replace("%s", self.suit)
+            .replace("%%", "%")
         )
-        return rs
 
     def __bytes__(self) -> bytes:
         class_code = self.__class__.__name__[0]

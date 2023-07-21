@@ -79,7 +79,7 @@ def server_6() -> None:
     # We might want to create a Pool of these so that
     # we can get even more done at one time.
     simulators = []
-    for i in range(4):
+    for _ in range(4):
         sim = Simulation(setup_q, results_q)
         sim.start()
         simulators.append(sim)
@@ -88,7 +88,7 @@ def server_6() -> None:
     table = Table(decks=6, limit=50, dealer=Hit17(), split=ReSplit(), payout=(3, 2))
     for bet in Flat, Martingale, OneThreeTwoSix:
         player = Player(SomeStrategy(), bet(), 100, 25)
-        for sample in range(5):
+        for _ in range(5):
             setup_q.put((table, player))
 
     # Queue a terminator for each simulator.

@@ -79,11 +79,11 @@ class Deck3(list):
 
     def __init__(self, decks: int = 1) -> None:
         super().__init__()
-        for i in range(decks):
+        for _ in range(decks):
             self.extend(card(r + 1, s) for r in range(13) for s in iter(Suit))
         random.shuffle(self)
         burn = random.randint(1, 52)
-        for i in range(burn):
+        for _ in range(burn):
             self.pop()
 
 
@@ -104,7 +104,7 @@ class Deck3a(list):
         )
         random.shuffle(self)
         burn = random.randint(1, 52)
-        for i in range(burn):
+        for _ in range(burn):
             self.pop()
 
 
@@ -270,10 +270,6 @@ class Hand4:
             # Clone an existing hand
             self.dealer_card = arg1.dealer_card
             self.cards = arg1.cards
-        elif isinstance(arg1, Hand4) and isinstance(arg2, Card) and "split" is not None:
-            # Split an existing hand
-            self.dealer_card = arg1.dealer_card
-            self.cards = [arg1.cards[split], arg2]
         elif isinstance(arg1, Card) and isinstance(arg2, Card) and isinstance(
             arg3, Card
         ):
@@ -309,8 +305,7 @@ class Hand5:
 
     @staticmethod
     def freeze(other) -> "Hand5":
-        hand = Hand5(other.dealer_card, *other.cards)
-        return hand
+        return Hand5(other.dealer_card, *other.cards)
 
     @staticmethod
     def split(other, card0, card1) -> Tuple["Hand5", "Hand5"]:

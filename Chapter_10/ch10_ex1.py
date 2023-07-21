@@ -153,11 +153,10 @@ def blogx_encode(object: Any) -> Dict[str, Any]:
         return object
 
 def blogx_decode(some_dict: Dict[str, Any]) -> Dict[str, Any]:
-    if set(some_dict.keys()) == set(["__class__", "__args__", "__kw__"]):
-        class_ = eval(some_dict["__class__"])
-        return class_(*some_dict["__args__"], **some_dict["__kw__"])
-    else:
+    if set(some_dict.keys()) != {"__class__", "__args__", "__kw__"}:
         return some_dict
+    class_ = eval(some_dict["__class__"])
+    return class_(*some_dict["__args__"], **some_dict["__kw__"])
 
 test_json_2 = """
     >>> text = json.dumps(travel_x, indent=4, default=blogx_encode)
@@ -318,11 +317,10 @@ def blog_encode(object: Any) -> Dict[str, Any]:
 
 
 def blog_decode(some_dict: Dict[str, Any]) -> Dict[str, Any]:
-    if set(some_dict.keys()) == {"__class__", "__args__", "__kw__"}:
-        class_ = eval(some_dict["__class__"])
-        return class_(*some_dict["__args__"], **some_dict["__kw__"])
-    else:
+    if set(some_dict.keys()) != {"__class__", "__args__", "__kw__"}:
         return some_dict
+    class_ = eval(some_dict["__class__"])
+    return class_(*some_dict["__args__"], **some_dict["__kw__"])
 
 
 test_json_3 = """
@@ -608,12 +606,11 @@ def blog_j_encode(object: Union[Blog_J, Post_J, Any]) -> Dict[str, Any]:
                 second=object.second,
             ),
         )
-    else:
-        try:
-            encoding = object._json
-        except AttributeError:
-            encoding = json.JSONEncoder().default(object)
-        return encoding
+    try:
+        encoding = object._json
+    except AttributeError:
+        encoding = json.JSONEncoder().default(object)
+    return encoding
 
 
 travel3 = Blog_J("Travel")
@@ -715,12 +712,11 @@ def blog_j2_encode(object: Union[Blog_J, Post_J, Any]) -> Dict[str, Any]:
             __args__=[object.strftime("%Y-%m-%dT%H:%M:%S"), "%Y-%m-%dT%H:%M:%S"],
             __kw__={},
         )
-    else:
-        try:
-            encoding = object._json
-        except AttributeError:
-            encoding = json.JSONEncoder().default(object)
-        return encoding
+    try:
+        encoding = object._json
+    except AttributeError:
+        encoding = json.JSONEncoder().default(object)
+    return encoding
 
 
 test_json_5 = """

@@ -84,11 +84,11 @@ class Wheel3:
     ) -> Iterable[bytes]:
         request = wsgiref.util.shift_path_info(environ)  # 1. Parse.
         print("Wheel3", request, file=sys.stderr)  # 2. Logging.
-        if request and request.lower().startswith("eu"):  # 3. Evaluate.
-            response = self.eu(environ, start_response)
-        else:
-            response = self.am(environ, start_response)
-        return response  # 4. Respond.
+        return (
+            self.eu(environ, start_response)
+            if request and request.lower().startswith("eu")
+            else self.am(environ, start_response)
+        )
 
 
 test_wheel3 = """
@@ -108,7 +108,7 @@ def roulette_server_3(count: int = 1) -> None:
     if count is None:
         httpd.serve_forever()
     else:
-        for c in range(count):
+        for _ in range(count):
             httpd.handle_request()
 
 

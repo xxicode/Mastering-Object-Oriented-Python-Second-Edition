@@ -56,8 +56,7 @@ class Hand:
         c1 = self._cards[-1]
         del self.card
         self.card = deck.pop()
-        h_new = self.__class__(self.dealer_card, c1, deck.pop())
-        return h_new
+        return self.__class__(self.dealer_card, c1, deck.pop())
 
 
 class Hand_Lazy(Hand):
@@ -66,9 +65,7 @@ class Hand_Lazy(Hand):
     def total(self) -> int:
         delta_soft = max(c.soft - c.hard for c in self._cards)
         hard_total = sum(c.hard for c in self._cards)
-        if hard_total + delta_soft <= 21:
-            return hard_total + delta_soft
-        return hard_total
+        return hard_total + delta_soft if hard_total + delta_soft <= 21 else hard_total
 
     @property
     def card(self) -> List[BlackJackCard]:
@@ -115,7 +112,7 @@ class Hand_Eager(Hand):
         self.total = 0
         self._delta_soft = 0
         self._hard_total = 0
-        self._cards: List[BlackJackCard] = list()
+        self._cards: List[BlackJackCard] = []
         for c in cards:
             # Mypy cannot discern the actual type of the setter.
             # https://github.com/python/mypy/issues/4167
